@@ -243,33 +243,6 @@
                 </template>
               </v-simple-table>
             </v-container>
-            <v-container v-if="cont_cuenta>0">
-              <h2>CUENTA DE FONDOS</h2>
-
-              <v-sheet color="grey" class="pa-0" v-show="loader == true">
-                <v-skeleton-loader class="mx-auto" max-width="auto" type="table" :tile="false"></v-skeleton-loader>
-              </v-sheet>
-              <v-simple-table :fixed-header="true" height="200" v-show="loader == false">
-                <template v-slot:default>
-                  <tbody>
-                    <tr
-                      v-for="(data,index) in array_busqueda_agencia.Cuenta"
-                      :key="index"
-                      @click="calcularTotalBusqueda()"
-                      v-show="index !== 'importeTotal' && index !== 'saldoTotal'"
-                    >
-                      <td>{{data.identificador}}</td>
-                      <td>{{data.razon_social}}</td>
-                      <td>{{data.tipo}}</td>
-                      <td>{{data.descripcion}}</td>
-                      <td>
-                        <v-checkbox v-model="precios" :value="data"></v-checkbox>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
-            </v-container>
           </v-card>
         </v-dialog>
         <v-simple-table class="py-0" :fixed-header="true" height="450">

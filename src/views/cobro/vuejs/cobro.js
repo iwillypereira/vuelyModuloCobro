@@ -137,6 +137,7 @@ export default {
             show_click_pagar: false,
             itemPolizas: [],
             // ########
+            es_cuenta_fondo: false,
         }
     },
     created() {
