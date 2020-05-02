@@ -12,10 +12,7 @@
               <h2 class="py-5 px-5">MODULO DE COBRO</h2>
             </v-col>
             <v-col cols="12" md="4">
-              <tasa-cambio
-                v-model="tasa_cambio.importe"
-                v-on:success-change="modificarTipoCambio"
-              ></tasa-cambio>
+              <tasa-cambio v-model="tasa_cambio.importe" v-on:success-change="modificarTipoCambio"></tasa-cambio>
             </v-col>
             <v-col cols="10" md="5">
               <v-autocomplete
@@ -75,7 +72,6 @@
               ></v-text-field>
               <!-- <div v-html="msjError" style="font-size:12px; color:red;" class="py-0"></div> -->
             </v-col>
-            <!-- <v-col cols="12" md="1"></v-col> -->
           </v-row>
         </v-container>
         <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
@@ -133,8 +129,13 @@
                       @click="calcularTotalBusqueda()"
                       v-show="index !== 'importeTotal' && index !== 'saldoTotal'"
                     >
-                      <td>{{data.identificador}}</td>
-                      <td>$ {{$RMT.formatoPrecio(data.saldo)}}</td>
+                      <td>
+                        <a
+                          :href="tipoIdentificador(data.tipo,data.identificador,'link')"
+                          target="_blank"
+                        >{{ data.identificador }}</a>
+                      </td>
+                      <td style="white-space:nowrap;">$ {{$RMT.formatoPrecio(data.saldo)}}</td>
                       <td>$ {{$RMT.formatoPrecio(data.importe)}}</td>
                       <td>{{data.tipo}}</td>
                       <td>{{data.descripcion}}</td>
@@ -171,7 +172,12 @@
                       @click="calcularTotalBusqueda()"
                       v-show="index !== 'importeTotal' && index !== 'saldoTotal'"
                     >
-                      <td>{{data.identificador}}</td>
+                      <td>
+                        <a
+                          :href="tipoIdentificador(data.tipo,data.identificador,'link')"
+                          target="_blank"
+                        >{{ data.identificador }}</a>
+                      </td>
                       <td>$ {{$RMT.formatoPrecio(data.saldo)}}</td>
                       <td>$ {{$RMT.formatoPrecio(data.importe)}}</td>
                       <td>{{data.tipo}}</td>
@@ -219,7 +225,12 @@
                       @click="calcularTotalBusqueda()"
                       v-show="index !== 'importeTotal' && index !== 'saldoTotal'"
                     >
-                      <td>{{data.identificador}}</td>
+                      <td>
+                        <a
+                          :href="tipoIdentificador(data.tipo,data.identificador,'link')"
+                          target="_blank"
+                        >{{ data.identificador }}</a>
+                      </td>
                       <td>$ {{$RMT.formatoPrecio(data.saldo)}}</td>
                       <td>$ {{$RMT.formatoPrecio(data.importe)}}</td>
                       <td>{{data.tipo}}</td>
@@ -267,7 +278,7 @@
               <tr>
                 <th class="text-center" style="text-align:center !important;">TIPO</th>
                 <th class="text-center" style="text-align:center !important;">IDENTIFICADOR</th>
-                <th class="text-center" style="text-align:center !important;">DESCRIPCION</th>
+                <th class="text-center" style="text-align:center !important;">DESCRIPCIÓN</th>
 
                 <th class="text-center" style="text-align:center !important;">IMPORTE</th>
                 <th class="text-center" style="text-align:center !important;">USD</th>
@@ -276,8 +287,13 @@
             </thead>
             <tbody>
               <tr v-for="(data,index) in json_busqueda_prueba" :key="index">
-                <td>{{ data.tipo_producto }}</td>
-                <td>{{ data.identificador }}</td>
+                <td>{{tipoIdentificador(data.tipo_producto,data.identificador,"title")}}</td>
+                <td class="text-right">
+                  <a
+                    :href="tipoIdentificador(data.tipo_producto,data.identificador,'link')"
+                    target="_blank"
+                  >{{ data.identificador }}</a>
+                </td>
                 <td>{{ data.descripcion }}</td>
                 <td
                   style="width: 200px !important; text-align:right !important"
@@ -334,12 +350,6 @@
               style="font-size:24px !important; font-weight:700 !important;"
             >{{'$ '+$RMT.formatoPrecio(total_saldo)}}</p>
           </v-col>
-          <!-- <v-col cols="2" md="2">
-            <p
-              class="text-right"
-              style="font-size:24px !important; font-weight:700 !important;"
-            >{{'$ '+$RMT.formatoPrecio(total_saldo_usd)}}</p>
-          </v-col>-->
         </v-row>
 
         <v-row class="pl-2 pr-2 py-0">
@@ -360,8 +370,8 @@
           </v-col>
           <!-- <v-col>
             <v-btn @click="dialog_modal_pagos = true">Open</v-btn>
-            <modal-pagos v-model="dialog_modal_pagos"></modal-pagos>
-          </v-col> -->
+            <modal-pagos v-model="dialog_modal_pagos" :saldo="total_saldo" :saldoUSD="total_saldo_usd" v-on:hideModal="cerrarModalPagos" :jsonOrdenPago="array_test"></modal-pagos>
+          </v-col>-->
         </v-row>
       </v-card>
     </v-container>
@@ -463,10 +473,11 @@
                 <v-list-item ripple>
                   <v-list-item-content>
                     <v-list-item-title
-                      class="font-weight-bold"
+                      class="font-weight-bold display-1"
                       v-html="'$ '+$RMT.formatoPrecio(total_saldo)+' MXN'"
                     ></v-list-item-title>
                     <v-list-item-subtitle
+                      class="headline"
                       v-html="'$ '+$RMT.formatoPrecio(total_saldo_usd) + ' USD'"
                     ></v-list-item-subtitle>
                   </v-list-item-content>
@@ -474,7 +485,7 @@
                 <!-- <span v-html="'$ '+$RMT.formatoPrecio(total_saldo)"></span> -->
                 <!-- <span v-html="'$ '+$RMT.formatoPrecio(total_saldo_usd) + ' USD'"></span> -->
               </v-col>
-              <v-col cols="12" class="paymentCont">
+              <v-col cols="12" class="paymentCont mb-3">
                 <div v-for="(radioButtons,indexRadio) in apiForms.metodos" :key="indexRadio">
                   <input
                     type="radio"
@@ -495,20 +506,29 @@
                 <!-- cuenta de fondo -->
               </v-col>
               <v-col cols="12" md="6" v-show="comprobantesPago.id_tipo == '15'">
-                <v-text-field v-model="itemPolizas.importe" label="Cuenta de Fondo" prefix="$" filled readonly></v-text-field>
+                <v-text-field
+                  v-model="itemPolizas.importe"
+                  label="Cuenta de Fondo"
+                  prefix="$"
+                  filled
+                  readonly
+                ></v-text-field>
               </v-col>
               <v-col
                 cols="12"
                 md="12"
                 v-show="comprobantesPago.id_tipo == '1' || comprobantesPago.id_tipo == '7'"
               >
-                <v-select
-                  v-model="comprobantesPago.efectivo_facturable"
-                  :items="facturable"
-                  item-value="valor"
-                  item-text="text"
-                  label="Facturar"
-                ></v-select>
+                <header>Facturar</header>
+                <v-radio-group v-model="comprobantesPago.efectivo_facturable" row>
+                  <v-radio
+                    v-for="(optionsFact,indexFact) in facturable"
+                    :key="indexFact"
+                    color="success"
+                    :value="optionsFact.valor"
+                    :label="optionsFact.text"
+                  ></v-radio>
+                </v-radio-group>
               </v-col>
               <v-col
                 cols="12"
@@ -630,11 +650,10 @@
                 <v-btn
                   v-show="hidden_click_pagar"
                   :disabled="!validForm"
-                  color="blue darken-1"
-                  text
+                  color="success darken-1"
                   @click="pagarOrdenPago"
                 >Pagar</v-btn>
-                <v-btn v-show="show_click_pagar" color="blue darken-1" text loading>Pagar</v-btn>
+                <v-btn v-show="show_click_pagar" color="success darken-1" loading>Pagar</v-btn>
               </v-col>
             </v-row>
           </v-form>
@@ -657,8 +676,8 @@
             @click="dialog_confirmar_guardar = false; agencia_pagar_orden = false;"
           >CANCELAR</v-btn>
 
-          <v-btn color="green darken-1" dark @click="crearOrdenPago();">GUARDAR</v-btn>
-          <!-- <v-btn color="green darken-1" dark @click="dialog_guardar_pagar=true">GUARDAR</v-btn> -->
+          <!-- <v-btn color="green darken-1" dark @click="crearOrdenPago();">GUARDAR</v-btn> -->
+          <v-btn color="green darken-1" dark @click="dialog_guardar_pagar=true">GUARDAR</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

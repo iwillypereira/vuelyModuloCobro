@@ -8,7 +8,7 @@
   >
     <v-card>
       <v-toolbar dark color="pink">
-        <v-toolbar-title>PAGAR ORDEN DE PAGO</v-toolbar-title>
+        <v-toolbar-title>PAGAR ORDEN DE PAGO #{{jsonOrdenPago.id_orden_pago}}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <v-btn icon dark @click.native="toggleModal" class="pt-0">
@@ -27,14 +27,15 @@
 <script>
 export default {
   name: "modal-pagos",
-  props: ["value"],
+  props: ["value", "saldo", "saldoUSD", "jsonOrdenPago"],
   data() {
     return {};
   },
-  methods:{
-      toggleModal(){
-        this.$emit('input',false);
-      }
+  methods: {
+    toggleModal() {
+      this.$emit("input", false);
+      this.$emit("hideModal");
+    }
   }
 };
 </script>

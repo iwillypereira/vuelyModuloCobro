@@ -129,7 +129,6 @@ export default {
                 autoProcessQueue: true
             },
             dialog_confirmacion_pago: false,
-            // ########
             agencia_pagar_orden: false,
             estatus_pago: '',
             alert_mensaje: '',
@@ -137,6 +136,7 @@ export default {
             hidden_click_pagar: true,
             show_click_pagar: false,
             itemPolizas: [],
+            // ########
         }
     },
     created() {
@@ -202,12 +202,13 @@ export default {
             this.json_busqueda_prueba.forEach(reserva => {
                 this.total_saldo = (parseFloat(this.total_saldo) + parseFloat(reserva.saldo));
                 this.total_importe = (parseFloat(this.total_importe) + parseFloat(reserva.importe));
-                var total_saldo_usd = this.convertirPreciosADolares(reserva.saldo,reserva.tipo_cambio);
+                var total_saldo_usd = this.convertirPreciosADolares(reserva.saldo, reserva.tipo_cambio);
                 this.total_saldo_usd = (parseFloat(this.total_saldo_usd) + parseFloat(total_saldo_usd));
             });
         },
         nuevaOrden() {
             this.limpiarTabla();
+            this.resetCampos();
             this.mensaje("Se ha creado nueva orden", 'warning');
         },
         limpiarTabla() {
@@ -238,7 +239,7 @@ export default {
             this.precios.forEach(reserva => {
                 this.total_saldo2 = this.total_saldo2 + parseFloat(reserva.saldo);
                 this.total_importe2 = this.total_importe2 + parseFloat(reserva.importe);
-                var total_saldo_usd2 = this.convertirPreciosADolares(reserva.saldo,reserva.tipo_cambio);
+                var total_saldo_usd2 = this.convertirPreciosADolares(reserva.saldo, reserva.tipo_cambio);
                 this.total_saldo_usd2 = (parseFloat(this.total_saldo_usd2) + parseFloat(total_saldo_usd2));
             });
 
@@ -369,7 +370,6 @@ export default {
                 emulateJSON: true
             }).then(function (response) {
                 if (response.body.error == false) {
-                    this.nuevaOrden();
                     this.dialog_confirmar_guardar = false;
                     var model = response.body;
                     if (this.agencia_pagar_orden == true) {
@@ -387,7 +387,7 @@ export default {
                         this.saldores = saldo_restante;
 
                         console.log(this.comprobantesPago);
-                    }else{
+                    } else {
                         window.open(this.RMTURL + "contabilidad/ordenPago/GeneratePdf/idOrden/" + model.model.id_orden_pago, '_blank');
                     }
                     this.mensaje("Se ha guardado la orden correctamente", "green");
@@ -485,15 +485,15 @@ export default {
         },
         consultaFormulario() {
             // if (this.apiForms.length == 0) {
-                this.$http.get(this.RMTURL + "contabilidad/ordenPago/consultaFormulario").then(
-                    function (response) {
-                        this.apiForms = response.body;
-                        this.tasa_cambio = response.body.tasa_cambio;
-                    },
-                    function () {
-                        console.log("Error");
-                    }
-                );
+            this.$http.get(this.RMTURL + "contabilidad/ordenPago/consultaFormulario").then(
+                function (response) {
+                    this.apiForms = response.body;
+                    this.tasa_cambio = response.body.tasa_cambio;
+                },
+                function () {
+                    console.log("Error");
+                }
+            );
             // }
         },
         abrirModalPagos() {
@@ -538,22 +538,22 @@ export default {
                             this.comprobantesPago = response.body.comprobante;
                             this.id_comprobante_pago = this.comprobantesPago.id_comprobante_pago;
                             console.log(this.comprobantesPago);
-                            
+
                             this.comprobantesPago.importe = comprobante.saldores;
                             this.total_pago = this.comprobantesPago.importe;
                             this.total_saldo = this.total_pago;
                             this.cambiarSaldoADolares();
-                            
+
                             var saldores = parseFloat(this.comprobantesPago.importe) - parseFloat(this.total_pago);
                             if (saldores < 0) {
                                 saldores = 0;
                             }
                             this.saldores = (Math.round(saldores * 100) / 100).toFixed(2);
-                            
+
                             if (this.comprobantesPago.importe <= 0) {
                                 this.dialog_guardar_pagar = false;
-                                this.agencia_pagar_orden = false; 
-                                this.resetCampos(); 
+                                this.agencia_pagar_orden = false;
+                                this.resetCampos();
                                 this.nuevaOrden();
                             }
                             this.dialog_confirmacion_pago = true;
@@ -682,9 +682,9 @@ export default {
             var saldo_usd = parseFloat(this.total_saldo) / parseFloat(this.tasa_cambio.importe);
             this.total_saldo_usd = this.redondearPrecio(saldo_usd, 2);
         },
-        convertirPreciosADolares(importe,tipo_cambio) {
+        convertirPreciosADolares(importe, tipo_cambio) {
             var dolares = parseFloat(importe) / parseFloat(tipo_cambio);
-            return this.redondearPrecio(dolares,2);
+            return this.redondearPrecio(dolares, 2);
         },
         tarjetaValidation() {
             if (this.comprobantesPago.id_tipo == 8 || this.comprobantesPago.id_tipo == 9) {
@@ -713,17 +713,76 @@ export default {
                     );
             }
         },
-        clearDropzone(){
+        clearDropzone() {
             this.$refs.myVueDropzone.removeAllFiles();
         },
-        cambiarPrecioArtADolares(){
+        cambiarPrecioArtADolares() {
             // this.json_busqueda_prueba.forEach(reserva => {
             //     this.total_saldo = (parseFloat(this.total_saldo) + parseFloat(reserva.saldo));
             //     this.total_importe = (parseFloat(this.total_importe) + parseFloat(reserva.importe));
             //     var total_saldo_usd = this.convertirPreciosADolares(reserva.saldo,reserva.tipo_cambio);
             //     this.total_saldo_usd = (parseFloat(this.total_saldo_usd) + parseFloat(total_saldo_usd));
             // });
-        }
+        },
+        cerrarModalPagos() {
+            console.log('cerrando modal');
+            // this.agencia_pagar_orden = false;
+            // this.resetCampos();
+            // this.nuevaOrden();
+        },
+        tipoIdentificador(tipoIdentificador, identificador, opcion) {
+            var title = '';
+            var link = '';
+            var tipoBloqueo = '';
+            var id = '';
+            if (typeof tipoIdentificador != "undefined") {
+                switch (tipoIdentificador) {
+                    case 'Reservacion':
+                        id = identificador.replace('H', '');
+                        title = 'Reservación';
+                        link = this.redirectRMT + this.sur4 + '/reservacion/view/id/' + id;
+                        break;
+                    case 'Actividad':
+                        id = identificador.replace('A', '');
+                        title = 'Actividad';
+                        link = this.redirectRMT + this.sur4 + '/activities/view/id/' + id;
+                        break;
+                    case 'Tour':
+                        id = identificador.replace('T', '');
+                        title = 'Tour';
+                        link = this.redirectRMT + this.sur4 + '/tourReservacion/view/id/' + id;
+                        break;
+                    case 'Grupo':
+                        id = identificador.replace('G', '');
+                        title = 'Grupo';
+                        link = this.redirectRMT + this.sur4 + '/bloqueos/view/id/' + id;
+                        break;
+                    case 'Boda':
+                        id = identificador.replace('B', '');
+                        title = 'Boda';
+                        link = this.redirectRMT + this.sur4 + '/bloqueos/view/id/' + id;
+                        break;
+                    case 'Abono-cuenta':
+                        id = identificador.replace('C', '');
+                        title = 'Abono-cuenta';
+                        link = '';
+                        break;
+                    default:
+                        tipoBloqueo = tipoIdentificador.split('-');
+                        var items = identificador.split("-");
+                        title = 'Habitación-' + tipoBloqueo[1];
+                        link = this.redirectRMT + this.sur4 + '/bloqueos/view/id/' + items[0];
+                        break;
+                }
+
+                if (opcion == 'link') {
+                    return link;
+                } else if (opcion == 'title') {
+                    return title;
+                }
+            }
+
+        },
 
     },
     computed: {
