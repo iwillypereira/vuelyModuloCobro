@@ -7,6 +7,10 @@ import pagos from './imports/pagos';
 import agencias from './imports/agencias';
 import notificaciones from './imports/notificaciones';
 import cobros from './imports/cobro';
+import comprobantesIngresos from './comprobantesIngresos';
+import ordenesPago from './ordenesPago';
+import comprobantesPago from './comprobantesPago'; 
+import catalogoCuentas from './catalogoCuentas';
 
 Vue.use(Router)
 
@@ -19,7 +23,11 @@ export default new Router({
 		pagos,
 		agencias,
 		notificaciones,
-		cobros
+		cobros,
+		comprobantesIngresos,
+		ordenesPago,
+		comprobantesPago,
+		catalogoCuentas,
 		// {
 		// 	path: '/callback',
 		// 	component: Auth0CallBack

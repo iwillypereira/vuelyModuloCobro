@@ -30,6 +30,7 @@
                 no-data-text="ESCRIBA MAS DE 3 LETRAS..."
                 return-object
                 @click="mostrarBotonBusqueda = true;"
+                @change="autocompleteChange"
               >
                 <template v-slot:item="data">
                   <template>
@@ -56,6 +57,7 @@
                 dark
                 class="mt-4"
                 v-if="mostrarBotonBusqueda"
+                :disabled="disabledBtnSearch"
                 @click="abrirModal();  precios = []; array_busqueda_agencia = []"
               >
                 <v-icon>mdi-magnify</v-icon>
@@ -69,6 +71,7 @@
                 label="BUSCAR PRODUCTO"
                 v-on:keyup.13="peticionTest()"
                 append-icon="mdi-location-enter"
+                :readonly="disabledTextField"
               ></v-text-field>
               <!-- <div v-html="msjError" style="font-size:12px; color:red;" class="py-0"></div> -->
             </v-col>
@@ -83,7 +86,7 @@
                 <v-btn
                   icon
                   dark
-                  @click="dialog = false; nombre_agencia = ''; precios = [];  calcularTotalBusqueda(); array_busqueda_agencia = []; mostrarBotonBusqueda = true;"
+                  @click="dialog = false; precios = [];  calcularTotalBusqueda(); array_busqueda_agencia = []; mostrarBotonBusqueda = true;"
                   class="pt-0"
                 >
                   <v-icon>mdi-close</v-icon>
@@ -99,7 +102,7 @@
                   color="red"
                   normal
                   dark
-                  @click="dialog = false; nombre_agencia = ''; unirBusquedaConPagoGrid(); precios = [];  calcularTotalBusqueda(); array_busqueda_agencia = []; mostrarBotonBusqueda = true; "
+                  @click="dialog = false; unirBusquedaConPagoGrid(); precios = [];  calcularTotalBusqueda(); array_busqueda_agencia = []; mostrarBotonBusqueda = true; "
                   class="float-right"
                   :disabled="precios.length == 0"
                 >Agregar al pago</v-btn>
@@ -262,10 +265,17 @@
               <tr v-for="(data,index) in json_busqueda_prueba" :key="index">
                 <td>{{tipoIdentificador(data.tipo_producto,data.identificador,"title")}}</td>
                 <td class="text-right">
-                  <a
-                    :href="tipoIdentificador(data.tipo_producto,data.identificador,'link')"
-                    target="_blank"
-                  >{{ data.identificador }}</a>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <a
+                        :href="tipoIdentificador(data.tipo_producto,data.identificador,'link')"
+                        target="_blank"
+                        v-on="on"
+                      >{{ data.identificador }}</a>
+                    </template>
+                    <span v-if="data.agencia != ''">Agencia: {{data.agencia}}</span>
+                    <span v-else>Agencia: Indefinido</span>
+                  </v-tooltip>
                 </td>
                 <td>{{ data.descripcion }}</td>
                 <td
@@ -315,7 +325,7 @@
 
         <v-row class="pl-2 pr-2 py-0">
           <v-col cols="8" md="8">
-            <v-text-field label="OBSERVACIONES" v-model="observacion"></v-text-field>
+            <v-text-field label="OBSERVACIONES" v-model="ordenPago.observaciones"></v-text-field>
           </v-col>
           <v-col cols="4" md="4">
             <p
@@ -419,7 +429,7 @@
             <v-btn
               icon
               dark
-              @click="dialog_guardar_pagar = false; agencia_pagar_orden = false; resetCampos(); nuevaOrden();"
+              @click="dialog_guardar_pagar = false; agencia_pagar_orden = false; resetCampos();"
               class="pt-0"
             >
               <v-icon>mdi-close</v-icon>
@@ -459,7 +469,11 @@
                 <!-- <span v-html="'$ '+$RMT.formatoPrecio(total_saldo_usd) + ' USD'"></span> -->
               </v-col>
               <v-col cols="12" class="paymentCont mb-3">
-                <div v-for="(radioButtons,indexRadio) in apiForms.metodos" :key="indexRadio">
+                <div
+                  v-for="(radioButtons,indexRadio) in apiForms.metodos"
+                  :key="indexRadio"
+                  v-show="showMetodoPago(radioButtons.id_tipo)"
+                >
                   <input
                     type="radio"
                     :id="'control_'+indexRadio"
@@ -618,7 +632,7 @@
                 <v-btn
                   color="blue darken-1"
                   text
-                  @click="dialog_guardar_pagar = false; agencia_pagar_orden = false; resetCampos(); nuevaOrden();"
+                  @click="dialog_guardar_pagar = false; agencia_pagar_orden = false; resetCampos();"
                 >Cancelar</v-btn>
                 <v-btn
                   v-show="hidden_click_pagar"
@@ -630,27 +644,54 @@
               </v-col>
             </v-row>
           </v-form>
+          <v-row>
+            <v-col cols="12">
+              <div v-if="Array.isArray(this.ultimo_comprobante_pago) == false">
+                <p
+                  class="font-weight-black"
+                >Tienes pagos realizados con un monto de $ {{$RMT.formatoPrecio(ultimo_importe_pagado)}} en la orden actual.</p>
+              </div>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card>
     </v-dialog>
     <!-- Dialogo guardar confirmar -->
-    <v-dialog v-model="dialog_confirmar_guardar" max-width="480">
+    <v-dialog v-model="dialog_confirmar_guardar" max-width="500">
       <v-card>
-        <v-card-title class="headline">¿Estas seguro de guardar la orden?</v-card-title>
-
-        <v-card-text>Esta a punto de guardar la orden.</v-card-text>
-
+        <v-card-title
+          v-if="typeof this.ordenPago.id_orden_pago == 'undefined'"
+          class="headline"
+        >¿Estas seguro de guardar la orden?</v-card-title>
+        <v-card-title v-else class="headline">¿Estas seguro de actualizar la orden?</v-card-title>
+        <v-card-text
+          v-if="typeof this.ordenPago.id_orden_pago == 'undefined'"
+        >Esta a punto de guardar la orden.</v-card-text>
+        <v-card-text v-else>Esta a punto de actualizar la orden.</v-card-text>
+        <v-card-text v-show="Array.isArray(this.ultimo_comprobante_pago) == false">
+          <span
+            class="font-weight-black"
+          >Tienes pagos realizados con un monto de $ {{$RMT.formatoPrecio(ultimo_importe_pagado)}} en la orden actual.</span>
+        </v-card-text>
+        <v-card-text v-show="total_saldo < ultimo_importe_pagado">
+          <v-checkbox v-model="saldo_a_favor">
+            <template v-slot:label>
+              <div>
+                Se detectó un saldo a favor de <b>$ {{$RMT.formatoPrecio((total_saldo-ultimo_importe_pagado)*(-1))}}</b>. ¿Desea agregarlo a una cuenta de fondo?
+              </div>
+            </template>
+          </v-checkbox>
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-
           <v-btn
             color="red darken-1"
             text
             @click="dialog_confirmar_guardar = false; agencia_pagar_orden = false;"
           >CANCELAR</v-btn>
 
-          <!-- <v-btn color="green darken-1" dark @click="crearOrdenPago();">GUARDAR</v-btn> -->
-          <v-btn color="green darken-1" dark @click="dialog_guardar_pagar=true">GUARDAR</v-btn>
+          <v-btn color="green darken-1" dark @click="crearOrdenPago();">GUARDAR</v-btn>
+          <!-- <v-btn color="green darken-1" dark @click="dialog_guardar_pagar=true">GUARDAR</v-btn> -->
         </v-card-actions>
       </v-card>
     </v-dialog>

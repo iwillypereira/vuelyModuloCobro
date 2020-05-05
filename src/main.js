@@ -119,6 +119,9 @@ Vue.use(money,{ decimal: '.', thousands: ',', prefix: '$ ', precision: 2 })
  
 Vue.redirectRMT = Vue.prototype.redirectRMT = "https://rutamayatravel.com/";
 Vue.sur4 = Vue.prototype.sur4 = "sur4dev/admin";
+Vue.$formatDate = Vue.prototype.$formatDate = function(date){
+	return moment(date).format("DD/MM/YYYY");
+}
  
 Vue.use(VueGoogleMaps, {
 	load: {

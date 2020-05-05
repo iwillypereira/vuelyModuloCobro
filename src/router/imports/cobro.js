@@ -12,7 +12,7 @@ export default {
             path: '/cobro/',
             meta: {
                 requiresAuth: false,
-                title: 'message.mod_cobro',
+                title: 'message.mod_cobro', 
                 breadcrumb: [
                     {
                         breadcrumbInactive: 'cobro /',

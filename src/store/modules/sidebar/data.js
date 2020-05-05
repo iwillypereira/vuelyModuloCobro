@@ -39,7 +39,7 @@ export const menus = {
 	],
 	'message.modulo_pagos':[
 		{
-			action: 'zmdi-crop',
+			action: 'fas fa-file-invoice-dollar',
 			title: 'message.mod_pago',
 			active: false,
 			items: null,
@@ -47,6 +47,51 @@ export const menus = {
 			exact: true,
 			label:'Old'
 		},
+		{
+			action: 'fas fa-table',
+			title: 'message.consultaIngresos',
+			active: false,
+			items: null,
+			path: '/consultaIngresos',
+			exact: true,
+			label:'Old'
+		},
+		{
+			action: 'fas fa-file-alt',
+			title: 'message.ordenesPago',
+			active: false,
+			items: null,
+			path: '/ordenesPago',
+			exact: true,
+			label:'Old'
+		},
+		{
+			action: 'fas fa-file-invoice-dollar',
+			title: 'message.comprobantesPago',
+			active: false,
+			items: null,
+			path: '/comprobantesPago',
+			exact: true,
+			label:'Old'
+		},
+		{
+			action: 'fas fa-file-excel',
+			title: 'message.catalogoCuentas',
+			active: false,
+			items: null,
+			path: '/catalogoCuentas',
+			exact: true,
+			label:'Old'
+		},
+		// {
+		// 	action: 'fas fa-file-signature',
+		// 	title: 'message.polizas',
+		// 	active: false,
+		// 	items: null,
+		// 	path: '/polizas',
+		// 	exact: true,
+		// 	label:'Old'
+		// },
 	]
 
 }

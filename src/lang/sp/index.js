@@ -24,6 +24,18 @@ export default {
   modulo_pagos: "Finanzas",
   mod_pago: "Cobro",
 
+  //Comprobantes
+  consultaIngresos: "Ingreso/Agencias",
+
+   // ordenes de pago
+   ordenesPago: "Ordenes de Pago",
+
+   // Comprobantes de pago
+   comprobantesPago: "Comprobantes de Pago",
+ 
+   // Catalogo de cuentas
+   catalogoCuentas: "Catálogo de Cuentas",
+
 
   agencias: "Agencias",
   llamadas: "Registro de llámadas",
