@@ -25,7 +25,7 @@
                   >{{ props.item.id_comprobante_pago }}</a>
                 </td>
                 <td>{{ props.item.descripcion }}</td>
-                <td class="text-right">$ {{ formatPrice(props.item.importe) }}</td>
+                <td class="text-right">$ {{ $RMT.formatoPrecio(props.item.importe) }}</td>
                 <td class="text-center">{{ formatDate(props.item.log) }}</td>
                 <td>{{ props.item.nombre_agencia }}</td>
                 <td>{{ props.item.nombre_usuario }}</td>
@@ -41,7 +41,7 @@
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
                       <a
-                        v-if="props.item.facturacion==true"
+                        v-show="props.item.facturacion == true"
                         v-on="on"
                         :href="redirectRMT + 'sur4test/facturacionCfdi/factura/idrecibo/' + props.item.id_comprobante_pago + '/tipo/comprobante'"
                         target="_blank"
@@ -52,10 +52,58 @@
                     </template>
                     <span>Facturar Comprobante</span>
                   </v-tooltip>
+                  <div v-show="props.item.facturas.length > 0">
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <a
+                          v-on="on"
+                          :href="redirectRMT + 'sur4test/facturacionCfdi/factura/idrecibo/' + props.item.id_comprobante_pago + '/tipo/comprobante'"
+                          target="_blank"
+                          style="color:black; padding-right:5px;"
+                        >
+                          <v-icon>fas fa-file-invoice</v-icon>
+                        </a>
+                      </template>
+                      <span>Facturado</span>
+                    </v-tooltip>
+                  </div>
+                  <div v-show="props.item.facturas.length == 0 && props.item.facturacion==false">
+                    <span>No facturable</span>
+                  </div>
                   <!-- <v-icon
                     v-if="props.item.estatus=='P'"
                     @click="ponerFacturado(props.item.id_comprobante_pago)"
                   >far fa-check-square</v-icon>-->
+                </td>
+                <td>
+                  <!-- <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-show="props.item.estatus !== 'C'"
+                        class="ma-2"
+                        text
+                        icon
+                        color="red lighten-2"
+                        v-on="on"
+                      >
+                        <v-icon>mdi-cancel</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Cancelar Comprobante</span>
+                  </v-tooltip> -->
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        class="ma-2"
+                        text
+                        icon
+                        v-on="on"
+                      >
+                        <v-icon>fas fa-eye</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Ver comprobantes</span>
+                  </v-tooltip>
                 </td>
               </tr>
             </template>
@@ -96,7 +144,8 @@ export default {
         { text: "Usuario Elaboró", value: "nombre_usuario", sortable: true },
         { text: "% Comisión", value: "comision", sortable: true },
         { text: "Estatus", value: "estatus", sortable: true },
-        { text: "Facturación", value: "actions", sortable: false }
+        { text: "Facturación", value: "actions", sortable: false },
+        { text: "Opciones", value: "actions", sortable: false }
       ],
       snackbar: false,
       text: "Comprobante Facturado"

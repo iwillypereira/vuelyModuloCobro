@@ -26,7 +26,6 @@
                 item-value="id_agencia"
                 label="BUSCAR AGENCIA"
                 hint="ESCRIBA MAS DE 3 LETRAS..."
-                prepend-icon="mdi-search"
                 no-data-text="ESCRIBA MAS DE 3 LETRAS..."
                 return-object
                 @click="mostrarBotonBusqueda = true;"
@@ -48,7 +47,9 @@
             <v-col cols="2" md="2">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-icon class="mt-4 mr-3" @click="agregaCuenta();" v-on="on">attach_money</v-icon>
+                  <v-btn class="mt-4 mr-1" dark color="teal" @click="agregaCuenta();" v-on="on">
+                    <v-icon>attach_money</v-icon>
+                  </v-btn>
                 </template>
                 <span>Agregar fondo a la Agencia seleccionada.</span>
               </v-tooltip>
@@ -611,7 +612,12 @@
                 md="8"
                 v-show="comprobantesPago.id_tipo == '8' || comprobantesPago.id_tipo == '9'"
               >
-                <v-text-field v-model="importe_comision" label="Importe con Comisión" prefix="$"></v-text-field>
+                <v-text-field
+                  v-model="importe_comision"
+                  label="Importe con Comisión"
+                  readonly
+                  prefix="$"
+                ></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field v-model.number="total_pago" label="Total" prefix="$" readonly></v-text-field>
@@ -677,7 +683,8 @@
           <v-checkbox v-model="saldo_a_favor">
             <template v-slot:label>
               <div>
-                Se detectó un saldo a favor de <b>$ {{$RMT.formatoPrecio((total_saldo-ultimo_importe_pagado)*(-1))}}</b>. ¿Desea agregarlo a una cuenta de fondo?
+                Se detectó un saldo a favor de
+                <b>$ {{$RMT.formatoPrecio((total_saldo-ultimo_importe_pagado)*(-1))}}</b>. ¿Desea agregarlo a una cuenta de fondo?
               </div>
             </template>
           </v-checkbox>
@@ -822,11 +829,11 @@ tfoot td {
   font-weight: 900;
 } */
 
+/* agregar en tipo de pago el pago cuenta de fondo */
+
 @media only screen and (max-width: 700px) {
   .paymentCont {
     flex-direction: column;
   }
 }
 </style>
-
-// agregar en tipo de pago el pago cuenta de fondo

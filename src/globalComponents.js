@@ -34,7 +34,9 @@ import Chat from "Components/Widgets/Chat"
 
 import SaldosBloqueo from "Components/Widgets/SaldosBloqueo"
 
-import ModalPagos from "Components/Widgets/ModalPagos"
+// import ModalPagos from "Components/Widgets/ModalPagos"
+
+// import FormPagos from "Components/FormularioPagos/Form"
 
 
 
@@ -55,7 +57,8 @@ const GlobalComponents = {
       Vue.component('tasa-cambio', TasaCambio);
       Vue.component('chat-widget', Chat);
       Vue.component('saldos-bloqueo', SaldosBloqueo);
-      Vue.component('modal-pagos', ModalPagos);
+      // Vue.component('modal-pagos', ModalPagos);
+      // Vue.component('Form-pagos', FormPagos);
    }
 }
 

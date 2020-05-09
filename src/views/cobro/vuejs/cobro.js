@@ -53,7 +53,7 @@ export default {
             array_test: {},
             switchInput: false,
             array_cuartos_busqueda: [],
-            model_agencia_selected: [],
+            model_agencia_selected: null,
             ordenPago: {
                 'id_agencia': 0,
                 'importe_total': 0,
@@ -395,7 +395,12 @@ export default {
                 emulateJSON: true
             }).then(function (response) {
                 if (this.comprobantesPago.id_planpago != "" && this.comprobantesPago.id_cuenta != "") {
-                    this.comprobantesPago.comision = response.body;
+
+                    if (response.body != "") {
+                        this.comprobantesPago.comision = response.body;
+                    } else {
+                        this.comprobantesPago.comision = 0;
+                    }
 
                     if (this.comprobantesPago.importe > 0) {
                         this.operacionesMath();
@@ -614,6 +619,7 @@ export default {
                 hay_otros_articulos = true;
             }
             if (this.model_agencia_selected != null) {
+                console.log(this.model_agencia_selected);
                 if (hay_otros_articulos == false) {
                     var that = this;
                     this.es_cuenta_fondo = true;
@@ -686,8 +692,6 @@ export default {
             return icono;
         },
         addParametersFile(file, xhr, formData) {
-            console.log(this.id_comprobante_pago);
-            // formData.append('idComprobante', this.comprobantesPago.id_comprobante_pago);
             formData.append('idComprobante', this.id_comprobante_pago);
         },
         modificoPago() {

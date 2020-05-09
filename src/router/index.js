@@ -11,6 +11,7 @@ import comprobantesIngresos from './comprobantesIngresos';
 import ordenesPago from './ordenesPago';
 import comprobantesPago from './comprobantesPago'; 
 import catalogoCuentas from './catalogoCuentas';
+import polizas from './polizas';
 
 Vue.use(Router)
 
@@ -28,6 +29,7 @@ export default new Router({
 		ordenesPago,
 		comprobantesPago,
 		catalogoCuentas,
+		polizas
 		// {
 		// 	path: '/callback',
 		// 	component: Auth0CallBack

@@ -8,43 +8,43 @@
             <td>
               <b>Total Habitaciones:</b>
             </td>
-            <td>$ {{ formatoPrecio(array_saldoBloqueo.totaHabitaciones) }}</td>
+            <td>$ {{ $RMT.formatoPrecio(array_saldoBloqueo.totaHabitaciones) }}</td>
           </tr>
           <tr>
             <td>
               <b>Total Neto:</b>
             </td>
-            <td>$ {{ formatoPrecio(array_saldoBloqueo.totalNeto) }}</td>
+            <td>$ {{ $RMT.formatoPrecio(array_saldoBloqueo.totalNeto) }}</td>
           </tr>
           <tr>
             <td>
               <b>- Comisión Agencia</b>
             </td>
-            <td>$ {{ formatoPrecio(array_saldoBloqueo.comisionAgencia) }}</td>
+            <td>$ {{ $RMT.formatoPrecio(array_saldoBloqueo.comisionAgencia) }}</td>
           </tr>
           <tr>
             <td>
               <b>Total Agencia:</b>
             </td>
-            <td>$ {{ formatoPrecio(array_saldoBloqueo.totalAgencia) }}</td>
+            <td>$ {{ $RMT.formatoPrecio(array_saldoBloqueo.totalAgencia) }}</td>
           </tr>
           <tr>
             <td>
               <b>- Notas de Crédito:</b>
             </td>
-            <td>$ {{ formatoPrecio(array_saldoBloqueo.notasCredito) }}</td>
+            <td>$ {{ $RMT.formatoPrecio(array_saldoBloqueo.notasCredito) }}</td>
           </tr>
           <tr>
             <td>
               <b>- Recibos Aplicados:</b>
             </td>
-            <td>$ {{ formatoPrecio(array_saldoBloqueo.recibosAplicados) }}</td>
+            <td>$ {{ $RMT.formatoPrecio(array_saldoBloqueo.recibosAplicados) }}</td>
           </tr>
           <tr>
             <td>
               <b>Saldo por pagar a RMT:</b>
             </td>
-            <td>$ {{ formatoPrecio(array_saldoBloqueo.saldoPagar) }}</td>
+            <td>$ {{ $RMT.formatoPrecio(array_saldoBloqueo.saldoPagar) }}</td>
           </tr>
         </tbody>
       </template>

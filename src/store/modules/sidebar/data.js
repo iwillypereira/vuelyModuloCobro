@@ -83,15 +83,15 @@ export const menus = {
 			exact: true,
 			label:'Old'
 		},
-		// {
-		// 	action: 'fas fa-file-signature',
-		// 	title: 'message.polizas',
-		// 	active: false,
-		// 	items: null,
-		// 	path: '/polizas',
-		// 	exact: true,
-		// 	label:'Old'
-		// },
+		{
+			action: 'fas fa-file-signature',
+			title: 'message.polizas',
+			active: false,
+			items: null,
+			path: '/polizas',
+			exact: true,
+			label:'Old'
+		},
 	]
 
 }

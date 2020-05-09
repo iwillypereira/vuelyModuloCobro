@@ -36,6 +36,9 @@ export default {
    // Catalogo de cuentas
    catalogoCuentas: "Catálogo de Cuentas",
 
+  //  
+  polizas: "Pólizas",
+
 
   agencias: "Agencias",
   llamadas: "Registro de llámadas",
