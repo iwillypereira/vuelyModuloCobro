@@ -1,4 +1,4 @@
-CRMBODASGRUPOS
+
 ## INSTALACIONES
 Instalar los modulos con npm:
 
